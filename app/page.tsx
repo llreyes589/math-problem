@@ -53,56 +53,106 @@ export default function Home() {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-b from-blue-50 to-white">
-      <main className="container mx-auto px-4 py-8 max-w-2xl">
-        <h1 className="text-4xl font-bold text-center mb-8 text-gray-800">
-          Math Problem Generator
-        </h1>
+    <div className="min-h-screen bg-gradient-to-br from-violet-100 via-indigo-50 to-sky-100 dark:from-gray-900 dark:via-gray-800 dark:to-gray-900">
+      <div className="absolute inset-0 bg-grid-slate-200 [mask-image:linear-gradient(0deg,transparent,black)] dark:bg-grid-slate-800/50"></div>
 
-        <div className="bg-white rounded-lg shadow-lg p-6 mb-6">
+      <main className="relative container mx-auto px-4 py-12 max-w-4xl">
+        <div className="text-center mb-12">
+          <h1 className="text-5xl md:text-6xl font-extrabold mb-4 bg-clip-text text-transparent bg-gradient-to-r from-violet-600 to-indigo-600 dark:from-violet-400 dark:to-indigo-400">
+            Math Quest
+          </h1>
+          <p className="text-slate-600 dark:text-slate-300 text-lg md:text-xl">
+            Challenge your mind with interactive math problems
+          </p>
+        </div>
+
+        <div className="bg-white/80 dark:bg-gray-800/80 backdrop-blur-lg rounded-2xl shadow-xl p-8 mb-8 transform transition-all duration-300 hover:shadow-2xl">
           <button
             onClick={generateProblem}
             disabled={isLoading}
-            className="w-full bg-blue-600 hover:bg-blue-700 disabled:bg-gray-400 text-white font-bold py-3 px-4 rounded-lg transition duration-200 ease-in-out transform hover:scale-105"
+            className="group relative w-full bg-gradient-to-r from-violet-600 to-indigo-600 hover:from-violet-700 hover:to-indigo-700 disabled:from-gray-400 disabled:to-gray-500 text-white font-bold py-4 px-6 rounded-xl transition-all duration-300 ease-out hover:scale-[1.02] focus:ring-2 focus:ring-violet-400 focus:outline-none disabled:cursor-not-allowed"
           >
-            {isLoading ? "Generating..." : "Generate New Problem"}
+            <div className="absolute inset-0 h-full w-full scale-[0.90] bg-white/30 blur-lg rounded-xl transition-all duration-300 group-hover:scale-105"></div>
+            <div className="relative flex items-center justify-center space-x-2">
+              {isLoading ? (
+                <>
+                  <svg className="animate-spin h-5 w-5" viewBox="0 0 24 24">
+                    <circle
+                      className="opacity-25"
+                      cx="12"
+                      cy="12"
+                      r="10"
+                      stroke="currentColor"
+                      strokeWidth="4"
+                      fill="none"
+                    />
+                    <path
+                      className="opacity-75"
+                      fill="currentColor"
+                      d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
+                    />
+                  </svg>
+                  <span>Generating Challenge...</span>
+                </>
+              ) : (
+                <>
+                  <span className="text-xl">🎲</span>
+                  <span>Start New Challenge</span>
+                </>
+              )}
+            </div>
           </button>
         </div>
 
         {problem && (
-          <div className="bg-white rounded-lg shadow-lg p-6 mb-6">
-            <h2 className="text-xl font-semibold mb-4 text-gray-700">
-              Problem:
-            </h2>
-            <p className="text-lg text-gray-800 leading-relaxed mb-6">
-              {problem.problem_text}
-            </p>
+          <div className="bg-white/80 dark:bg-gray-800/80 backdrop-blur-lg rounded-2xl shadow-xl p-8 mb-8">
+            <div className="flex items-center justify-between mb-6">
+              <h2 className="text-2xl font-bold text-gray-800 dark:text-white flex items-center">
+                <span className="text-3xl mr-3">🧮</span> Your Challenge
+              </h2>
+              <div className="px-4 py-2 bg-indigo-100 dark:bg-indigo-900/50 rounded-lg text-indigo-600 dark:text-indigo-300 font-medium text-sm">
+                Problem #{sessionId}
+              </div>
+            </div>
 
-            <form onSubmit={submitAnswer} className="space-y-4">
-              <div>
+            <div className="mb-8 p-6 bg-gradient-to-r from-violet-50 to-indigo-50 dark:from-gray-700/50 dark:to-gray-700/30 rounded-xl border-l-4 border-violet-500">
+              <p className="text-xl text-gray-800 dark:text-gray-100 leading-relaxed">
+                {problem.problem_text}
+              </p>
+            </div>
+
+            <form onSubmit={submitAnswer} className="space-y-6">
+              <div className="relative">
                 <label
                   htmlFor="answer"
-                  className="block text-sm font-medium text-gray-700 mb-2"
+                  className="block text-lg font-medium text-gray-700 dark:text-gray-200 mb-3"
                 >
-                  Your Answer:
+                  Your Solution
                 </label>
-                <input
-                  type="number"
-                  id="answer"
-                  value={userAnswer}
-                  onChange={(e) => setUserAnswer(e.target.value)}
-                  className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-                  placeholder="Enter your answer"
-                  required
-                />
+                <div className="relative group">
+                  <input
+                    type="number"
+                    id="answer"
+                    value={userAnswer}
+                    onChange={(e) => setUserAnswer(e.target.value)}
+                    className="w-full px-6 py-4 text-lg bg-white dark:bg-gray-700 border-2 border-gray-200 dark:border-gray-600 rounded-xl focus:ring-4 focus:ring-violet-200 dark:focus:ring-violet-900 focus:border-violet-500 dark:focus:border-violet-500 transition-all duration-200 ease-in-out dark:text-white"
+                    placeholder="Enter your solution..."
+                    required
+                  />
+                  <div className="absolute inset-0 -z-10 bg-gradient-to-r from-violet-600 to-indigo-600 opacity-0 group-hover:opacity-20 rounded-xl transition-opacity duration-300 blur"></div>
+                </div>
               </div>
 
               <button
                 type="submit"
                 disabled={!userAnswer || isLoading}
-                className="w-full bg-green-600 hover:bg-green-700 disabled:bg-gray-400 text-white font-bold py-3 px-4 rounded-lg transition duration-200 ease-in-out transform hover:scale-105"
+                className="group relative w-full bg-gradient-to-r from-emerald-500 to-teal-500 hover:from-emerald-600 hover:to-teal-600 disabled:from-gray-400 disabled:to-gray-500 text-white font-bold py-4 px-6 rounded-xl transition-all duration-300 ease-out hover:scale-[1.02] focus:ring-2 focus:ring-emerald-400 focus:outline-none disabled:cursor-not-allowed"
               >
-                Submit Answer
+                <div className="absolute inset-0 h-full w-full scale-[0.90] bg-white/30 blur-lg rounded-xl transition-all duration-300 group-hover:scale-105"></div>
+                <div className="relative flex items-center justify-center space-x-2">
+                  <span className="text-xl">✨</span>
+                  <span>{isLoading ? "Checking..." : "Submit Solution"}</span>
+                </div>
               </button>
             </form>
           </div>
@@ -110,16 +160,29 @@ export default function Home() {
 
         {feedback && (
           <div
-            className={`rounded-lg shadow-lg p-6 ${
+            className={`transform transition-all duration-500 bg-white/80 dark:bg-gray-800/80 backdrop-blur-lg rounded-2xl shadow-xl p-8 ${
               isCorrect
-                ? "bg-green-50 border-2 border-green-200"
-                : "bg-yellow-50 border-2 border-yellow-200"
+                ? "border-l-8 border-emerald-500"
+                : "border-l-8 border-amber-500"
             }`}
           >
-            <h2 className="text-xl font-semibold mb-4 text-gray-700">
-              {isCorrect ? "✅ Correct!" : "❌ Not quite right"}
-            </h2>
-            <p className="text-gray-800 leading-relaxed">{feedback}</p>
+            <div className="flex items-center mb-4">
+              <span className="text-4xl mr-4">{isCorrect ? "🎉" : "💡"}</span>
+              <h2 className="text-2xl font-bold text-gray-800 dark:text-white">
+                {isCorrect ? "Brilliant Work!" : "Keep Learning!"}
+              </h2>
+            </div>
+            <div
+              className={`p-6 rounded-xl ${
+                isCorrect
+                  ? "bg-emerald-50/50 dark:bg-emerald-900/20"
+                  : "bg-amber-50/50 dark:bg-amber-900/20"
+              }`}
+            >
+              <p className="text-lg text-gray-700 dark:text-gray-200 leading-relaxed">
+                {feedback}
+              </p>
+            </div>
           </div>
         )}
       </main>
