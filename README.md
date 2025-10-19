@@ -81,6 +81,7 @@ Complete the TODO sections in the main page component:
 Create a new API route that handles:
 
 #### POST /api/math-problem (Generate Problem)
+
 - Use Google's Gemini AI to generate a math word problem
 - The AI should return JSON with:
   ```json
@@ -93,6 +94,7 @@ Create a new API route that handles:
 - Return the problem and session ID to the frontend
 
 #### POST /api/math-problem/submit (Submit Answer)
+
 - Receive the session ID and user's answer
 - Check if the answer is correct
 - Use AI to generate personalized feedback based on:
@@ -126,23 +128,23 @@ Create a new API route that handles:
 
 When submitting your assessment, provide:
 
-1. **GitHub Repository URL**: Make sure it's public
-2. **Live Demo URL**: Your Vercel deployment
+1. **GitHub Repository URL**: (https://github.com/llreyes589/math-problem.git)
+2. **Live Demo URL**: (https://math-problem-lester-ottodot.vercel.app/)
 3. **Supabase Credentials**: Add these to your README for testing:
    ```
-   SUPABASE_URL: [Your Supabase Project URL]
-   SUPABASE_ANON_KEY: [Your Supabase Anon Key]
+   SUPABASE_URL: https://zsmuosfebcaulohlvqrd.supabase.co
+   SUPABASE_ANON_KEY: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InpzbXVvc2ZlYmNhdWxvaGx2cXJkIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjA3OTU3NzYsImV4cCI6MjA3NjM3MTc3Nn0.TLOzlFBzA3f6UM9zWTIp3H8xb4T3Z3AuHhmhNtRQAB4
    ```
 
 ## Implementation Notes
 
-*Please fill in this section with any important notes about your implementation, design decisions, challenges faced, or features you're particularly proud of.*
+_Please fill in this section with any important notes about your implementation, design decisions, challenges faced, or features you're particularly proud of._
 
 ### My Implementation:
 
-- 
-- 
-- 
+- Challenges faced and Features I'm proud of: Supabase and Google Gemini implementation since this is the first time I used both technologies.
+- @google/generative-ai is already EOL and there is struggle in parsing strings to JSON, so I changed/modified it to @google/genai
+- has some tweak to tailwindCSS for it to work.
 
 ## Additional Features (Optional)
 
