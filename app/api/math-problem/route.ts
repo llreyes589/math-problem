@@ -73,7 +73,13 @@ export async function POST(request) {
   const { data, error } = await supabase
     .from("math_problem_submissions")
     .insert(form_body)
-    .select();
+    .select(
+      "id, user_answer, feedback_text, is_correct, created_at, math_problem_sessions(id, problem_text)"
+    );
+
+  if (error) {
+    return NextResponse.json({ message: error });
+  }
 
   // Return the feedback and correctness to the frontend
   return NextResponse.json({

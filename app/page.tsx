@@ -8,6 +8,17 @@ interface MathProblem {
   final_answer: number;
 }
 
+interface SessionHistory {
+  id: string;
+  user_answer: number;
+  is_correct: boolean;
+  feedback_text: string;
+  created_at: string;
+  math_problem_sessions: {
+    problem_text: string;
+  };
+}
+
 export default function Home() {
   const [problem, setProblem] = useState<MathProblem | null>(null);
   const [userAnswer, setUserAnswer] = useState("");
@@ -15,11 +26,20 @@ export default function Home() {
   const [isLoading, setIsLoading] = useState(false);
   const [sessionId, setSessionId] = useState<string | null>(null);
   const [isCorrect, setIsCorrect] = useState<boolean | null>(null);
+  const [showHistory, setShowHistory] = useState(false);
+  const [sessionHistory, setSessionHistory] = useState<SessionHistory[]>([]);
+
+  const fetchSessionHistory = async () => {
+    try {
+      const { data } = await axios.get("/api/math-problem/history");
+      setSessionHistory(data.data);
+    } catch (error) {
+      console.error("Failed to fetch session history:", error);
+    }
+  };
 
   const generateProblem = async () => {
-    // add login logic
     setIsLoading(true);
-    // TODO: Implement problem generation logic
     // This should call your API route to generate a new problem
     // and save it to the database
     const endpoint = "/api/math-problem";
@@ -51,8 +71,16 @@ export default function Home() {
     try {
       const { data } = await axios.post(endpoint, body);
       if (data) {
-        setFeedback(data.data[0].feedback_text);
-        setIsCorrect(data.data[0].is_correct);
+        const responseData = data.data[0];
+        setFeedback(responseData.feedback_text);
+        setIsCorrect(responseData.is_correct);
+        // get submitted, push to history
+        setSessionHistory((history) => {
+          return {
+            ...history,
+            responseData,
+          };
+        });
       }
     } catch (error) {
       console.error(error);
@@ -73,7 +101,108 @@ export default function Home() {
           <p className="text-slate-600 dark:text-slate-300 text-lg md:text-xl">
             Challenge your mind with interactive math problems
           </p>
+          <button
+            onClick={() => {
+              fetchSessionHistory();
+              setShowHistory(true);
+            }}
+            className="mt-6 inline-flex items-center px-4 py-2 bg-white/10 backdrop-blur-lg rounded-lg text-sm font-medium text-indigo-600 dark:text-indigo-400 hover:bg-indigo-50 dark:hover:bg-indigo-900/20 transition-all duration-200 space-x-2"
+          >
+            <svg
+              className="w-5 h-5"
+              fill="none"
+              stroke="currentColor"
+              viewBox="0 0 24 24"
+            >
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                strokeWidth="2"
+                d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"
+              />
+            </svg>
+            <span>View History</span>
+          </button>
         </div>
+
+        {showHistory && (
+          <div className="fixed inset-0 bg-gray-600/30 backdrop-blur-sm z-50 flex items-center justify-center">
+            <div className="bg-white dark:bg-gray-800 rounded-2xl shadow-2xl w-full max-w-3xl max-h-[80vh] overflow-hidden">
+              <div className="p-6 border-b border-gray-200 dark:border-gray-700 flex justify-between items-center">
+                <h2 className="text-2xl font-bold text-gray-800 dark:text-white flex items-center">
+                  <span className="text-3xl mr-3">📚</span> Session History
+                </h2>
+                <button
+                  onClick={() => setShowHistory(false)}
+                  className="text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-200"
+                >
+                  <svg
+                    className="w-6 h-6"
+                    fill="none"
+                    stroke="currentColor"
+                    viewBox="0 0 24 24"
+                  >
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      strokeWidth="2"
+                      d="M6 18L18 6M6 6l12 12"
+                    />
+                  </svg>
+                </button>
+              </div>
+              <div className="p-6 overflow-y-auto max-h-[calc(80vh-5rem)]">
+                {sessionHistory.length > 0 ? (
+                  <div className="space-y-4">
+                    {sessionHistory.map((session) => (
+                      <div
+                        key={session.id}
+                        className="bg-gray-50 dark:bg-gray-700/50 rounded-xl p-4 transition-all hover:shadow-md"
+                      >
+                        <div className="flex items-start justify-between">
+                          <div className="flex-1">
+                            <p className="text-gray-800 dark:text-gray-200 font-medium mb-2">
+                              {session.math_problem_sessions.problem_text}
+                            </p>
+                            <div className="flex items-center space-x-4 text-sm">
+                              <span className="text-gray-500 dark:text-gray-400">
+                                Your answer: {session.user_answer}
+                              </span>
+                              <span
+                                className={`px-2 py-1 rounded-full text-xs font-medium ${
+                                  session.is_correct
+                                    ? "bg-emerald-100 text-emerald-700 dark:bg-emerald-900/30 dark:text-emerald-400"
+                                    : "bg-amber-100 text-amber-700 dark:bg-amber-900/30 dark:text-amber-400"
+                                }`}
+                              >
+                                {session.is_correct
+                                  ? "✓ Correct"
+                                  : "× Incorrect"}
+                              </span>
+                            </div>
+                          </div>
+                          <time className="text-xs text-gray-500 dark:text-gray-400">
+                            {new Date(session.created_at).toLocaleDateString()}
+                          </time>
+                        </div>
+                        <p className="mt-3 text-gray-600 dark:text-gray-300 text-sm border-t border-gray-200 dark:border-gray-600/50 pt-3">
+                          {session.feedback_text}
+                        </p>
+                      </div>
+                    ))}
+                  </div>
+                ) : (
+                  <div className="text-center py-12">
+                    <div className="text-4xl mb-4">📝</div>
+                    <p className="text-gray-500 dark:text-gray-400">
+                      No history yet. Start solving some problems!
+                    </p>
+                  </div>
+                )}
+              </div>
+            </div>
+          </div>
+        )}
 
         <div className="bg-white/80 dark:bg-gray-800/80 backdrop-blur-lg rounded-2xl shadow-xl p-8 mb-8 transform transition-all duration-300 hover:shadow-2xl">
           <button
