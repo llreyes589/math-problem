@@ -1,6 +1,6 @@
 // app/api/users/route.js
 import { NextResponse } from "next/server";
-import { GoogleGenAI } from "@google/genai";
+import { GoogleGenAI, Type } from "@google/genai";
 import { supabase } from "../../../lib/supabaseClient";
 
 const ai = new GoogleGenAI({ apiKey: process.env.GOOGLE_API_KEY });
@@ -8,10 +8,24 @@ const ai = new GoogleGenAI({ apiKey: process.env.GOOGLE_API_KEY });
 export async function GET(request) {
   const response = await ai.models.generateContent({
     model: "gemini-2.5-flash",
-    contents:
-      "Generate a primary 5 level math problem. Make it in json form with problem_text and correct_answer properties",
+    contents: "Generate a primary 5 level math problem.",
     config: {
       responseMimeType: "application/json",
+      responseSchema: {
+        type: Type.ARRAY,
+        items: {
+          type: Type.OBJECT,
+          properties: {
+            problem_text: {
+              type: Type.STRING,
+            },
+            correct_answer: {
+              type: Type.INTEGER,
+            },
+          },
+          propertyOrdering: ["problem_text", "correct_answer"],
+        },
+      },
     },
   });
   const result = JSON.parse(response.text);
