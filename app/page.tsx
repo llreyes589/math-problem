@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import axios from "axios";
 
 interface MathProblem {
   problem_text: string;
@@ -24,6 +25,7 @@ export default function Home() {
       const response = await fetch(endpoint);
       const data = await response.json();
       setProblem(data.data[0]);
+      setSessionId(data.data[0].id);
     } catch (error) {
       console.error(error);
     }
@@ -34,6 +36,20 @@ export default function Home() {
     // TODO: Implement answer submission logic
     // This should call your API route to check the answer,
     // save the submission, and generate feedback
+    const body = {
+      user_answer: userAnswer,
+      session_id: sessionId,
+    };
+    const endpoint = "/api/math-problem";
+    try {
+      const { data } = await axios.post(endpoint, body);
+      if (data) {
+        setFeedback(data.data[0].feedback_text);
+        setIsCorrect(data.data[0].is_correct);
+      }
+    } catch (error) {
+      console.error(error);
+    }
   };
 
   return (
