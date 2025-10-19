@@ -9,7 +9,7 @@ export async function GET(request) {
   const response = await ai.models.generateContent({
     model: "gemini-2.5-flash",
     contents:
-      "Generate a math problems. Make it in json form with problem_text and correct_answer properties",
+      "Generate a primary 5 level math problem. Make it in json form with problem_text and correct_answer properties",
     config: {
       responseMimeType: "application/json",
     },
@@ -40,10 +40,10 @@ export async function POST(request) {
   // The original problem
   // The correct answer
   // The user's answer
-  let feedback_text;
+  let feedback_text: string;
   const response = await ai.models.generateContent({
     model: "gemini-2.5-flash",
-    contents: `Given the math problem: ${math_problem_sessions.problem_text}, correct answer: ${math_problem_sessions.correct_answer} and user answer: ${user_answer}, give a simple feedback_text.`,
+    contents: `Given the math problem: ${math_problem_sessions.problem_text}, correct answer: ${math_problem_sessions.correct_answer} and user answer: ${user_answer}, give a helpful and personalized feedback_text.`,
   });
 
   feedback_text = response.text;

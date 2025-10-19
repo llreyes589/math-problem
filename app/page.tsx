@@ -17,6 +17,8 @@ export default function Home() {
   const [isCorrect, setIsCorrect] = useState<boolean | null>(null);
 
   const generateProblem = async () => {
+    // add login logic
+    setIsLoading(true);
     // TODO: Implement problem generation logic
     // This should call your API route to generate a new problem
     // and save it to the database
@@ -28,11 +30,16 @@ export default function Home() {
       setSessionId(data.data[0].id);
     } catch (error) {
       console.error(error);
+    } finally {
+      setIsLoading(false);
     }
   };
 
   const submitAnswer = async (e: React.FormEvent) => {
     e.preventDefault();
+
+    // add loading login
+    setIsLoading(true);
     // TODO: Implement answer submission logic
     // This should call your API route to check the answer,
     // save the submission, and generate feedback
@@ -49,6 +56,8 @@ export default function Home() {
       }
     } catch (error) {
       console.error(error);
+    } finally {
+      setIsLoading(false);
     }
   };
 
