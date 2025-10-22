@@ -2,13 +2,16 @@
 import { NextResponse } from "next/server";
 import { GoogleGenAI, Type } from "@google/genai";
 import { supabase } from "../../../lib/supabaseClient";
+import { useSearchParams } from "next/navigation";
+import { NextRequest } from "next/server";
 
 const ai = new GoogleGenAI({ apiKey: process.env.GOOGLE_API_KEY });
 
-export async function GET(request) {
+export async function GET(request: NextRequest) {
+  const difficulty = request.nextUrl.searchParams.get("difficulty");
   const response = await ai.models.generateContent({
     model: "gemini-2.5-flash",
-    contents: "Generate a primary 5 level math problem.",
+    contents: `Generate a primary 5 level math problem. Add difficulty like easy, medium and hard. Make this question in ${difficulty} mode. It will also has hint in every question`,
     config: {
       responseMimeType: "application/json",
       responseSchema: {
@@ -19,16 +22,27 @@ export async function GET(request) {
             problem_text: {
               type: Type.STRING,
             },
+            hint: {
+              type: Type.STRING,
+            },
             correct_answer: {
               type: Type.INTEGER,
             },
           },
-          propertyOrdering: ["problem_text", "correct_answer"],
+          propertyOrdering: ["problem_text", "hint", "correct_answer"],
         },
       },
     },
   });
   const result = JSON.parse(response.text);
+  // make a copy of result varaiable
+  const resultCopy = result.map((r) => {
+    return {
+      ...r,
+    };
+  });
+  // exclude hint property in result
+  delete result[0].hint;
   const { data, error } = await supabase
     .from("math_problem_sessions")
     .insert(result)
@@ -36,6 +50,8 @@ export async function GET(request) {
   if (error) {
     return NextResponse.json({ message: error });
   }
+  // add hint in response
+  data[0]["hint"] = resultCopy[0].hint;
   return NextResponse.json({ message: "Math problems created", data });
 }
 
