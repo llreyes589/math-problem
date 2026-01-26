@@ -132,8 +132,8 @@ When submitting your assessment, provide:
 2. **Live Demo URL**: (https://math-problem-lester-ottodot.vercel.app/)
 3. **Supabase Credentials**: Add these to your README for testing:
    ```
-   SUPABASE_URL: https://zsmuosfebcaulohlvqrd.supabase.co
-   SUPABASE_ANON_KEY: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InpzbXVvc2ZlYmNhdWxvaGx2cXJkIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjA3OTU3NzYsImV4cCI6MjA3NjM3MTc3Nn0.TLOzlFBzA3f6UM9zWTIp3H8xb4T3Z3AuHhmhNtRQAB4
+   SUPABASE_URL: 
+   
    ```
 
 ## Implementation Notes
